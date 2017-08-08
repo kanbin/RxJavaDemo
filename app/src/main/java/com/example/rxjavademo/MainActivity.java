@@ -7,6 +7,7 @@ import android.util.Log;
 import rx.Observable;
 import rx.Observer;
 import rx.functions.Action1;
+import rx.functions.Func1;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -76,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        sender.subscribe(new Observer<String>() {
+        Observer<String> receiver = new Observer<String>() {
             @Override
             public void onCompleted() {
                 Log.d(TAG, "onCompleted: ");
@@ -91,7 +92,16 @@ public class MainActivity extends AppCompatActivity {
             public void onNext(String s) {
                 Log.d(TAG, "onNext: " + s);
             }
-        });
+        };
+
+        sender.subscribe(receiver);
+
+        sender.map(new Func1<String, String>() {
+            @Override
+            public String call(String s) {
+                return "Func1: " + s;
+            }
+        }).subscribe(receiver);
 
     }
 }
